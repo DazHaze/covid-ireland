@@ -98,16 +98,33 @@
                     marker.addTo(map_init);
                     console.log(county['PopulationProportionCovidCases'].toString());
 
-                    var high = "rgb(255,0,0)";
+                    var high = "rgb(200,0,0)";
                     var medium = "rgb(255,140,0)";
-                    var low = "rgb(255,69,0)";
+                    var low = "rgb(255,153,255)";
 
-                    var circle = L.circle([county['Lat'], county['Long']], {
+                    if (county['PopulationProportionCovidCases'] > 20000 && county['PopulationProportionCovidCases'] < 26000) {
+                        var circle = L.circle([county['Lat'], county['Long']], {
                         color: 'blue',
-                        fillColor: "rgb(255,"+ (255 - county['PopulationProportionCovidCases']/200) +",0)",
+                        fillColor: low,
                         fillOpacity: 0.5,
                         radius: county['PopulationProportionCovidCases']/2.2
                     }).addTo(map_init);
+                    }else if(county['PopulationProportionCovidCases'] > 26000 && county['PopulationProportionCovidCases'] < 30000){
+                        var circle = L.circle([county['Lat'], county['Long']], {
+                        color: 'blue',
+                        fillColor: medium,
+                        fillOpacity: 1,
+                        radius: county['PopulationProportionCovidCases']/2.2
+                    }).addTo(map_init);
+                    }else {
+                        var circle = L.circle([county['Lat'], county['Long']], {
+                        color: 'blue',
+                        fillColor: high,
+                        fillOpacity: 1,
+                        radius: county['PopulationProportionCovidCases']/2.2
+                    }).addTo(map_init);
+                    }
+
                 }
             });
     }
