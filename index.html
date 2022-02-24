@@ -1,0 +1,90 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+        integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+        crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+        integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+        crossorigin=""></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="map"></div>
+
+</body>
+<script>
+    var map_init = L.map('map', {
+        center: [53.1424, -7.6921],
+        zoom: 8
+    });
+    var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map_init);
+
+    // var marker = L.marker([53.1424, -7.6921]).addTo(map_init);
+    var Basemaps = {
+        "OSM": osm
+    }
+    // var Overlaymaps = {
+    //     "Marker": marker
+    // }
+    L.control.layers(Basemaps).addTo(map_init);
+
+    function PopulateData() {
+        $.getJSON(
+            'https://services1.arcgis.com/eNO7HHeQ3rUcBllm/arcgis/rest/services/Covid19CountyStatisticsHPSCIrelandOpenData/FeatureServer/0/query?where=1%3D1&outFields=CountyName,Lat,Long,ConfirmedCovidCases&outSR=4326&f=json',
+            function (data) {
+                var covidData = [];
+                covidData = data['features'];
+
+                for (let index = 0; index < covidData.length; index++) {
+                    const element = covidData[index];
+                    county = element['attributes'];
+
+                    var marker = new L.marker([county['Lat'], county['Long']]); //opacity may be set to zero
+                    var textString = "<h2>" + county['CountyName'] + "</h2>" + "Confirmed cases: " + "<strong>" + county['ConfirmedCovidCases'].toString()+ "</strong>" + " <br> ";
+                    marker.bindTooltip(textString, {
+                        permanent: false,
+                        className: "my-label",
+                        offset: [0, 0]
+                    });
+                    marker.addTo(map_init);
+
+                    // var marker2 = new L.marker([county['Lat'], county['Long']], {
+                    //     opacity: 0.01
+                    // }); //opacity may be set to zero
+                    // marker2.bindTooltip(county['CountyName'], {
+                    //     permanent: true,
+                    //     className: "my-label",
+                    //     offset: [0, -30]
+                    // });
+                    // marker2.addTo(map_init);
+                }
+
+
+
+            });
+    }
+
+    PopulateData();
+</script>
+
+</html>
