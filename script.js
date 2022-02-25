@@ -8,11 +8,11 @@ document.body.onload = function () {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map_init);
 
-    var Basemaps = {
-        "OSM": osm
-    }
+    // var Basemaps = {
+    //     "OSM": osm
+    // }
 
-    L.control.layers(Basemaps).addTo(map_init);
+    // L.control.layers(Basemaps).addTo(map_init);
 
     function PopulateData() {
         $.getJSON(
